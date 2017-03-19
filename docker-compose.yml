@@ -1,0 +1,5 @@
+version: '2'
+services:
+  saltstack:
+    image: ezh1k/saltstack
+    restart: unless-stopped

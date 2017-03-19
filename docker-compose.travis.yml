@@ -1,0 +1,9 @@
+version: '2'
+services:
+  saltstack:
+    build:
+      context: docker
+      args:
+          version: fabric-2017.03-01
+    image: saltstack:latest
+    restart: "no"
