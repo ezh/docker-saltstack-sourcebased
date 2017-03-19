@@ -57,6 +57,6 @@ after_success:
     set -e
     docker images
     # publish if tag contains vNNN
-    echo $GIT_TAG | grep -qe '^v[0-9]' && docker push $REPO
+    echo $GIT_TAG | grep -qe '^fabric' && docker push $REPO
     echo Success
 
