@@ -1,0 +1,23 @@
+Jinja2
+MarkupSafe
+PyOpenSSL # REST_CHERRYPY
+PyYAML
+boto3
+boto>=2.32.1
+cherrypy # REST_CHERRYPY
+docker
+futures>=2.0
+gitpython # SALT.FILESERVER.GITFS
+moto>=0.3.6
+msgpack-python>0.3
+paramiko
+passlib # SALT.AUTH.FILE
+psutil # SALT.MODULES.PS
+pycrypto>=2.6.1
+python-dateutil
+pyzmq>=2.2.0
+requests>=1.0.0
+toolz
+tornado<5.0
+utmp # SALT.MODULES.PS
+ws4py # REST_CHERRYPY

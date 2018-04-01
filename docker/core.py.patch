@@ -1,0 +1,11 @@
+--- core.py.orig	2018-03-22 12:42:50.365304584 +0300
++++ core.py	2018-03-23 13:15:49.912469215 +0300
+@@ -1494,6 +1494,8 @@
+                             )
+                     elif salt.utils.path.which('supervisord') in init_cmdline:
+                         grains['init'] = 'supervisord'
++                    elif salt.utils.path.which('dumb-init') in init_cmdline:
++                        grains['init'] = 'dumb-init'
+                     elif init_cmdline == ['runit']:
+                         grains['init'] = 'runit'
+                     elif '/sbin/my_init' in init_cmdline:

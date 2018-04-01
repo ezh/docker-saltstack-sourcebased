@@ -1,0 +1,66 @@
+diff -urBNs salt.orig/auth/__init__.py salt.new/auth/__init__.py
+--- salt.orig/auth/__init__.py	2018-03-24 15:26:51.000000000 +0300
++++ salt.new/auth/__init__.py	2018-03-26 12:28:44.000000000 +0300
+@@ -283,7 +283,7 @@
+             return False
+ 
+         if load['eauth'] not in self.opts['external_auth']:
+-            # The eauth system is not enabled, fail
++            log.debug('The eauth system "%s" is not enabled', load['eauth'])
+             log.warning('Authentication failure of type "eauth" occurred.')
+             return False
+ 
+@@ -361,6 +363,7 @@
+         eauth = token['eauth'] if token else load['eauth']
+         if eauth not in self.opts['external_auth']:
+             # No matching module is allowed in config
++            log.debug('The eauth system "%s" is not enabled', eauth)
+             log.warning('Authorization failure occurred.')
+             return None
+ 
+@@ -371,6 +374,9 @@
+             name = self.load_name(load)  # The username we are attempting to auth with
+             groups = self.get_groups(load)  # The groups this user belongs to
+         eauth_config = self.opts['external_auth'][eauth]
++        if not eauth_config:
++            log.debug('eauth "%s" configuration is empty', eauth)
++
+         if not groups:
+             groups = []
+ 
+@@ -690,6 +697,7 @@
+         if fstr not in self.auth:
+             print(('The specified external authentication system "{0}" is '
+                    'not available').format(eauth))
++            print("Available eauth types: {0}".format(", ".join(self.auth.file_mapping.keys())))
+             return ret
+ 
+         args = salt.utils.args.arg_lookup(self.auth[fstr])
+
+diff -urBNs salt.orig/auth/sharedsecret.py salt.new/auth/sharedsecret.py
+--- salt.orig/auth/sharedsecret.py	2018-03-24 15:26:51.000000000 +0300
++++ salt.new/auth/sharedsecret.py	2018-03-26 13:23:14.000000000 +0300
+@@ -37,8 +37,8 @@
+ log = logging.getLogger(__name__)
+ 
+ 
+-def auth(username, sharedsecret, **kwargs):
++def auth(username, password):
+     '''
+     Shared secret authentication
+     '''
+-    return sharedsecret == __opts__.get('sharedsecret')
++    return password == __opts__.get('sharedsecret')
+
+diff -urBNs salt.orig/master.py salt.new/master.py
+--- salt.orig/master.py	2018-03-24 15:26:51.000000000 +0300
++++ salt.new/master.py	2018-03-26 12:55:10.000000000 +0300
+@@ -2073,6 +2074,8 @@
+ 
+             if not authorized:
+                 # Authorization error occurred. Do not continue.
++                if auth_type == 'eauth' and not auth_list and 'username' in extra and 'eauth' in extra:
++                    log.debug('Auth configuration for eauth "%s" and user "%s" is empty', extra['eauth'], extra['username'])
+                 log.warning(err_msg)
+                 return {'error': {'name': 'AuthorizationError',
+                                   'message': 'Authorization error occurred.'}}
